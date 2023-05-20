@@ -1302,6 +1302,10 @@ inputs:
     description: Favourite games
     default: <default-value>
 
+  plugin_vndb_tag_limit:
+    description: Display limit (tags)
+    default: <default-value>
+
   # ====================================================================================
   # 🧠 16personalities
 

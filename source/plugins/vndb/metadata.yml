@@ -60,6 +60,13 @@ inputs:
     zero: disable
     default: 2
 
+  plugin_vndb_tag_limit:
+    description: |
+      Display limit (Tags)
+    type: number
+    min: 1
+    default: 3
+
   plugin_vndb_favourite_games:
     description: |
       Favourite games
