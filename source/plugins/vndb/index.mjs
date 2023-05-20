@@ -64,7 +64,7 @@ async function getRecentlyFinishedVnList(imports, uid, max) {
     match = re.exec(res.data)
   }
   finished_vns = finished_vns.slice(0, max)
-  addExtraInfo(imports, finished_vns)
+  await addExtraInfo(imports, finished_vns)
   let matchs = /Playing.*?\((.+?)\).*?Finished.*?\((.+?)\)/
   const re2 = new RegExp(matchs)
   match = re2.exec(res.data)
@@ -97,7 +97,7 @@ async function getRecentlyPlayingVnList(imports, uid, max) {
     match = re.exec(res.data)
   }
   vns = vns.slice(0, max)
-  addExtraInfo(imports, vns)
+  await addExtraInfo(imports, vns)
   return vns
 }
 
@@ -119,12 +119,16 @@ async function addExtraInfo(imports, vns) {
     for (let j = 0; j < res.data.results.length; j++) {
       const dataRes = res.data.results[j]
       if (vns[i].id == dataRes.id) {
-        vns[i].image = dataRes.image.url
+        vns[i].image = await urlToImage(imports, dataRes.image.url)
         vns[i].tags = getTopTags(dataRes.tags)
         break
       }
     }
   }
+}
+
+async function urlToImage(imports, url){
+  return await imports.imgb64(url, {width: 64, height: 64})
 }
 
 async function getFavouriteVns(imports, vns) {
@@ -147,7 +151,7 @@ async function getFavouriteVns(imports, vns) {
       "id": dataRes.id,
       "altname": dataRes.alttitle ? dataRes.alttitle : dataRes.title,
       "name": dataRes.title,
-      "image": dataRes.image.url,
+      "image": await urlToImage(imports, dataRes.image.url),
       "tags": getTopTags(dataRes.tags)
     })
   }
@@ -158,6 +162,9 @@ async function deal(imports, data) {
   let result = {}
   try {
     const uid = data.user
+    if (uid == ''){
+      return
+    }
     const { total_time, username } = await getUserData(imports, uid)
     const { finished_vns, playing_num, finished_num } = await getRecentlyFinishedVnList(imports, uid, data.finished_games_limit)
     result.player = {
