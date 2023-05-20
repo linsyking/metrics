@@ -128,11 +128,11 @@ async function addExtraInfo(imports, vns, maxtag) {
   }
 }
 
-async function urlToImage(imports, url){
-  return await imports.imgb64(url, {width: 64, height: 64})
+async function urlToImage(imports, url) {
+  return await imports.imgb64(url, { width: 64, height: 64 })
 }
 
-async function getFavouriteVns(imports, vns, maxtag) {
+async function getFavouriteVns(imports, vns, uid, maxtag) {
   if (vns.length == 0) {
     return []
   }
@@ -156,6 +156,7 @@ async function getFavouriteVns(imports, vns, maxtag) {
       "tags": getTopTags(dataRes.tags, maxtag)
     })
   }
+  await getVNUserInfo(imports, result, uid)
   return result
 }
 
@@ -164,7 +165,7 @@ async function deal(imports, data) {
   try {
     const maxtag = data.tagmax
     const uid = data.user
-    if (uid == ''){
+    if (uid == '') {
       return
     }
     const { total_time, username } = await getUserData(imports, uid)
@@ -176,7 +177,7 @@ async function deal(imports, data) {
       playing_num: playing_num
     }
     const playing_vns = await getRecentlyPlayingVnList(imports, uid, data.playing_games_limit, maxtag)
-    const favourite_vns = await getFavouriteVns(imports, data.favourite_games, maxtag)
+    const favourite_vns = await getFavouriteVns(imports, data.favourite_games, uid, maxtag)
     result.finished_vns = finished_vns
     result.playing_vns = playing_vns
     result.favourite_vns = favourite_vns
@@ -184,5 +185,34 @@ async function deal(imports, data) {
     return result
   } catch (err) {
     console.error(err)
+  }
+}
+
+async function getVNUserInfo(imports, vns, uid) {
+  if (vns.length == 0) {
+    return
+  }
+  let ft = ["or"]
+  for (let i = 0; i < vns.length; i++) {
+    ft.push(["id", "=", vns[i].id])
+  }
+  const vndata = {
+    "user": uid,
+    "filters": ft,
+    "fields": "vote, started, finished, notes",
+    "results": 100
+  }
+  const res = await imports.axios.post("https://api.vndb.org/kana/ulist", vndata)
+  const results = res.data.results
+  for (let i = 0; i < vns.length; ++i) {
+    for (let j = 0; j < results.length; ++j) {
+      if (vns[i].id == results[j].id) {
+        vns[i].notes = results[j].notes
+        vns[i].start = results[j].started ? results[j].started : ''
+        vns[i].finish = results[j].finished ? results[j].finished : ''
+        vns[i].vote = results[j].vote ? (results[j].vote / 10).toString() : '-'
+        break
+      }
+    }
   }
 }
