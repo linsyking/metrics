@@ -146,15 +146,20 @@ async function getFavouriteVns(imports, vns, uid, maxtag) {
   }
   const res = await imports.axios.post("https://api.vndb.org/kana/vn", vndata)
   let result = []
+  const dataRes = res.data.results
   for (let i = 0; i < vns.length; i++) {
-    const dataRes = res.data.results[i]
-    result.push({
-      "id": dataRes.id,
-      "altname": dataRes.alttitle ? dataRes.alttitle : dataRes.title,
-      "name": dataRes.title,
-      "image": await urlToImage(imports, dataRes.image.url),
-      "tags": getTopTags(dataRes.tags, maxtag)
-    })
+    for (let j = 0; j < dataRes.length; ++j) {
+      if (vns[i] == dataRes[j].id) {
+        result.push({
+          "id": dataRes[j].id,
+          "altname": dataRes[j].alttitle ? dataRes[j].alttitle : dataRes[j].title,
+          "name": dataRes[j].title,
+          "image": await urlToImage(imports, dataRes[j].image.url),
+          "tags": getTopTags(dataRes[j].tags, maxtag)
+        })
+        break
+      }
+    }
   }
   await getVNUserInfo(imports, result, uid)
   return result
