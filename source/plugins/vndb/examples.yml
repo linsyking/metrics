@@ -1,0 +1,9 @@
+- name: Example
+  uses: lowlighter/metrics@latest
+  with:
+    filename: metrics.plugin.vndb.svg
+    token: ${{ secrets.METRICS_TOKEN }}
+    base: ""
+    plugin_vndb: yes
+  prod:
+    skip: true

@@ -1,0 +1,71 @@
+name: 🧩 Vndb
+category: social
+description: |
+  Short description
+examples:
+  default: https://via.placeholder.com/468x60?text=No%20preview%20available
+authors:
+  - linsyking
+supports:
+  - user
+  - organization
+  - repository
+scopes: []
+inputs:
+
+  plugin_vndb:
+    description: |
+      Enable vndb plugin
+    type: boolean
+    default: no
+
+  plugin_vndb_sections:
+    description: |
+      Displayed sections
+
+      - `player`: display profile
+      - `favourite`: display favourite games
+      - `recently-finished`: display recently finished games
+      - `recently-playing`: display recently playing games
+    type: array
+    format: comma-separated
+    default: player, recently-playing, favourite
+    options:
+      - player
+      - favourite
+      - recently-finished
+      - recently-playing
+
+  plugin_vndb_user:
+    description: |
+      vndb user id, starts with "u"
+
+      This can be found on your vndb user profile
+    type: string
+    default: ""
+
+  plugin_vndb_finished_games_limit:
+    description: |
+      Display limit (Finished games)
+    type: number
+    min: 0
+    zero: disable
+    default: 2
+
+  plugin_vndb_playing_games_limit:
+    description: |
+      Display limit (Playing games)
+    type: number
+    min: 0
+    zero: disable
+    default: 2
+
+  plugin_vndb_favourite_games:
+    description: |
+      Favourite games
+
+      Use vndb id (starts with "v")
+    type: array
+    format: comma-separated
+    default: ""
+    example: v400, v620

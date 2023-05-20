@@ -1040,6 +1040,10 @@
     border-radius: 7px;
   }
 
+img {
+  object-fit: cover;
+}
+
 /* Steam */
   .steam .games {
     margin-left: 28px;
