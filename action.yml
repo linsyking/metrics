@@ -1277,6 +1277,32 @@ inputs:
     default: <default-value>
 
   # ====================================================================================
+  # 🕹️ VNDB
+
+  plugin_vndb:
+    description: Enable vndb plugin
+    default: <default-value>
+
+  plugin_vndb_sections:
+    description: Displayed sections
+    default: <default-value>
+
+  plugin_vndb_user:
+    description: VNDB user id
+
+  plugin_vndb_finished_games_limit:
+    description: Display limit (finished games)
+    default: <default-value>
+
+  plugin_vndb_playing_games_limit:
+    description: Display limit (playing games)
+    default: <default-value>
+
+  plugin_vndb_favourite_games:
+    description: Favourite games
+    default: <default-value>
+
+  # ====================================================================================
   # 🧠 16personalities
 
   plugin_16personalities:
