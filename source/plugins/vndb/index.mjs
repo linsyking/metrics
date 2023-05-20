@@ -102,6 +102,9 @@ async function getRecentlyPlayingVnList(imports, uid, max) {
 }
 
 async function addExtraInfo(imports, vns) {
+  if (vns.length == 0) {
+    return
+  }
   let ft = ["or"]
   for (let i = 0; i < vns.length; i++) {
     ft.push(["id", "=", vns[i].id])
