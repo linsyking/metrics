@@ -24,7 +24,7 @@ export default async function({login, q, imports, data, account}, {enabled = fal
 
     //Querying api and format result (https://wakatime.com/developers#stats)
     console.debug(`metrics/compute/${login}/plugins > wakatime > querying api`)
-    const {data: {text: total_time}} = await imports.axios.get(`${url}/api/v1/users/${user}/all_time_since_today?api_key=${token}`)
+    const {data: {data: alltime}} = await imports.axios.get(`${url}/api/v1/users/${user}/all_time_since_today?api_key=${token}`)
     const {data: {data: stats}} = await imports.axios.get(`${url}/api/v1/users/${user}/stats/${range}?api_key=${token}`)
 
     const projectStats = stats.projects?.map(({name, percent, total_seconds: total}) => ({name, percent: percent / 100, total})).sort((a, b) => b.percent - a.percent)
@@ -37,7 +37,7 @@ export default async function({login, q, imports, data, account}, {enabled = fal
       time: {
         total: (others ? stats.total_seconds_including_other_language : stats.total_seconds) / (60 * 60),
         daily: (others ? stats.daily_average_including_other_language : stats.daily_average) / (60 * 60),
-        globaltotal: total_time
+        globaltotal: alltime.text
       },
       languages: stats.languages?.map(({name, percent, total_seconds: total}) => ({name, percent: percent / 100, total})).filter(({name}) => imports.filters.text(name, _ignored)).sort((a, b) => b.percent - a.percent).slice(0, limit),
       os: stats.operating_systems?.map(({name, percent, total_seconds: total}) => ({name, percent: percent / 100, total})).sort((a, b) => b.percent - a.percent).slice(0, limit),
